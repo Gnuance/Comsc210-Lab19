@@ -1,16 +1,12 @@
-/*  Lab 18: Movie reviews with linked list to hold review items
+/*  Lab 19: Movie reviews with linked list to hold review items + reading reviews from text file
     IDE: Vscode
 
     Design Decisions:
-    1. I'm starting with code from Lab 17 and modifying to fit this lab.
-    2. Going to create a class for movie to hold the movie object to make the code more maintainable overall.
-    3. For adding to head or tail, it could be implemented as separate functions or one function with an if statement.
-        Not sure which is better overall.
-    4. Also decided early on, just based on OOP principles that because reviews essentially belonged to the movies they referred to,
-        that reviews should be a subclass/struct within the Movie objects themselves.
-    5. Added try catch statements to handle stoi and stod. If I had more time to spend on this project, I'd eventually deal with conversion
-        from string to int/double and validation in their own functions, but try/catch is quick, dirty and gets the job done for a small
-        program like this. Spent too much time on this already.
+    1. We already have all the structure in place from Lab 18 with reviews as a subclass for each movie object, and a method to delete
+        all reviews in the Movie object destructor.    
+    2. I think we'll use a do while loop to continuously add movies, and during each iteration, we'll use rand() for the number of
+        fake movie reviews to the movie, along with rand() to assign the rating.
+    3. Planning to keep it simple with a vector to hold the movie elements and delete the vector at the end of the program.
 */
 
 #include <iostream>
@@ -18,6 +14,7 @@
 #include <string>
 #include <sstream>
 #include <exception>
+#include <vector>
 using namespace std;
 
 // Movie object file declaration to hold info on movie and list of reviews
@@ -58,9 +55,12 @@ public:
 int main()
 {
     string userInput = "";
+    string movieName = "";
+    int movieYearReleased = 0;
     int headOrTail = -1;
-    double reviewRating = -1;
-    string reviewComment = "";
+    // double reviewRating = -1;
+    // string reviewComment = "";
+    vector<Movie> movies = vector<Movie>();
     Movie movie0 = Movie("Chinatown", 1974);
 
     // Phew, now that the object structure is in place, let's start working on the console ui
@@ -85,8 +85,12 @@ int main()
             cout << "Invalid input. Please enter 0 or 1." << endl;
     } while (headOrTail != 0 && headOrTail != 1);
 
-    do // Now that we have a valid option for linked list additions, prompt for review ratings
+    do // Now that we have a valid option for linked list additions, prompt user for movie info
     {
+        // Get Movie name
+        cout << "Enter the movie name: ";
+        getline(cin, movieName);
+
         do // Get review rating from user
         {
             cout << "Enter review rating 0-5: ";
@@ -106,9 +110,7 @@ int main()
             if (reviewRating < 0 || reviewRating > 5) cout << "Invalid input." << endl;
         } while (reviewRating < 0 || reviewRating > 5);
 
-        // Get review comment
-        cout << "Enter review comments: ";
-        getline(cin, reviewComment);
+        
 
         // We have rating and comment, now add to Movie object review
         movie0.addReview(reviewRating, reviewComment, headOrTail);
