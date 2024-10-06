@@ -61,12 +61,12 @@ int main()
     string userInput = "";
     string movieName = "";
     int movieYearReleased = 0;
-    int headOrTail = 0; // Will insert reviews at head
+    int headOrTail = 0; // Will insert review nodes at head
     int numOfReviews = 0;
     // double reviewRating = -1;
     // string reviewComment = "";
     Movie *movie0 = nullptr;
-    vector<Movie *> movieList = vector<Movie *>();
+    vector<Movie*> movieList = vector<Movie*>();
     const string INPUT_FILE_NAME = "movieReviews.txt";
     ifstream inputFile;
     string fileLine = "";
@@ -74,7 +74,25 @@ int main()
 
     // Phew, now that the object structure is in place, let's start working on the console ui
     // Get user input for program, either 0 or 1 for how to add new reviews to linked list
-    cout << "Linked list will insert review nodes at head." << endl;
+    cout << "Which linked list method should we use?" << endl;
+    cout << "\t[0] Nodes added to the head." << endl;
+    cout << "\t[1] Nodes added to the tail." << endl;
+    do
+    {
+        cout << "\tChoice: ";
+        getline(cin, userInput);
+        try
+        {
+            headOrTail = stoi(userInput);
+        }
+        catch (const exception &e)
+        {
+            headOrTail = -1; // Reset value for next try
+        }
+        // Verify if string is a double AND within range
+        if (headOrTail != 0 && headOrTail != 1)
+            cout << "Invalid input. Please enter 0 or 1." << endl;
+    } while (headOrTail != 0 && headOrTail != 1);
 
     // Try opening file and output error to console if file is no good
     inputFile.open(INPUT_FILE_NAME);
@@ -84,10 +102,34 @@ int main()
         return 1;
     }
 
-    for (size_t i = 0; i < 5 && !endOfFile; i++)
-    {  
-        // Auto populate Movie name and year released.
-        movie0 = new Movie(string("Movie #" + i), 1995 + i);
+    do // Now that we have a valid option for linked list additions, prompt user for movie info
+    {
+        // Get Movie name from user
+        cout << "Enter the movie name: ";
+        getline(cin, movieName);
+
+        do // Get Movie year released from user
+        {
+            cout << "Enter the year " << movieName << " was released: ";
+            getline(cin, userInput);
+            try
+            {
+                movieYearReleased = stoi(userInput);
+            }
+            catch (const exception &e)
+            {
+                // String not an int. Catch statement cannot be written as above because comparison operator < and > don't work like !=
+                cout << "Invalid input." << endl;
+                movieYearReleased = 0; // Reset value for next try
+                continue;
+            }
+            // String is a double but verify if it's in range
+            if (movieYearReleased < 1887)
+                cout << "Invalid input." << endl;
+        } while (movieYearReleased < 1887);
+
+        // We have the movie name and year, now add Movie to list
+        movie0 = new Movie(movieName, movieYearReleased);
 
         // Dereference movie0 pointer and add object to list of movies
         movieList.push_back(movie0);
@@ -109,7 +151,14 @@ int main()
                 break;
             }
         }
-    }
+
+        // Ask if user wanna do it again, but only if file has more reviews
+        if (!endOfFile)
+        {
+            cout << "Add another movie (y/n): ";
+            getline(cin, userInput);
+        }
+    } while ((userInput == "y" || userInput == "yes" || userInput == "Y") && !endOfFile);
 
     // Movie addition done, nullify pointers
     movie0 = nullptr;
