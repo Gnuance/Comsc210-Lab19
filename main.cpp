@@ -138,6 +138,7 @@ int main()
             // Check if input file has data to read
             if (getline(inputFile, fileLine))
             {
+                cout << fileLine << endl;
                 movie0->addReview(GetRandomDouble(1.0, 5.0), fileLine, headOrTail);
             }
             else
