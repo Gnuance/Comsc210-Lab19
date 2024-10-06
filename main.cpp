@@ -67,6 +67,7 @@ int main()
     const string INPUT_FILE_NAME = "movieReviews.txt";
     ifstream inputFile;
     string fileLine = "";
+    bool endOfFile = false;
 
     // Phew, now that the object structure is in place, let's start working on the console ui
     // Get user input for program, either 0 or 1 for how to add new reviews to linked list
@@ -92,67 +93,75 @@ int main()
 
     // Try opening file and output error to console if file is no good
     inputFile.open(INPUT_FILE_NAME);
-    if (inputFile)
+    if (!inputFile) // Output error if problem opening file
     {
-        do // Now that we have a valid option for linked list additions, prompt user for movie info
+        std::cerr << "Error opening file! Better luck next time..." << endl;
+        return 1;
+    }
+
+    do // Now that we have a valid option for linked list additions, prompt user for movie info
+    {
+        // Get Movie name from user
+        cout << "Enter the movie name: ";
+        getline(cin, movieName);
+
+        do // Get Movie year released from user
         {
-            // Get Movie name from user
-            cout << "Enter the movie name: ";
-            getline(cin, movieName);
-
-            do // Get Movie year released from user
+            cout << "Enter the year " << movieName << " was released: ";
+            getline(cin, userInput);
+            try
             {
-                cout << "Enter the year " << movieName << " was released: ";
-                getline(cin, userInput);
-                try
-                {
-                    movieYearReleased = stoi(userInput);
-                }
-                catch (const exception &e)
-                {
-                    // String not an int. Catch statement cannot be written as above because comparison operator < and > don't work like !=
-                    cout << "Invalid input." << endl;
-                    movieYearReleased = 0; // Reset value for next try
-                    continue;
-                }
-                // String is a double but verify if it's in range
-                if (movieYearReleased < 1887)
-                    cout << "Invalid input." << endl;
-            } while (movieYearReleased < 1887);
-
-            // We the movie name and year, now add Movie to list
-            movie0 = new Movie(movieName, movieYearReleased);
-
-            // Use rand() to add random number of reviews < 7, with random ratings to movie
-            numOfReviews = rand() % 7;
-            for (size_t i = 0; i < numOfReviews; i++)
-            {
-                if (getline(inputFile, fileLine))
-                {
-                    movie0->addReview(rand() % 5 + 1, );
-                }
+                movieYearReleased = stoi(userInput);
             }
+            catch (const exception &e)
+            {
+                // String not an int. Catch statement cannot be written as above because comparison operator < and > don't work like !=
+                cout << "Invalid input." << endl;
+                movieYearReleased = 0; // Reset value for next try
+                continue;
+            }
+            // String is a double but verify if it's in range
+            if (movieYearReleased < 1887)
+                cout << "Invalid input." << endl;
+        } while (movieYearReleased < 1887);
 
-            // Dereference movie0 pointer and add object to list of movies
-            movieList.push_back(*movie0);
+        // We the movie name and year, now add Movie to list
+        movie0 = new Movie(movieName, movieYearReleased);
 
-            // Ask if user wanna do it again
+        // Use rand() to add random number of reviews < 7, with random ratings to movie
+        numOfReviews = rand() % 7;
+        for (size_t i = 0; i < numOfReviews; i++)
+        {
+            // Check if input file has data to read
+            if (!getline(inputFile, fileLine))
+            {
+                endOfFile = true;
+                break;
+            }
+            movie0->addReview(rand() % 5 + 1, fileLine, headOrTail);
+        }
+
+        // Dereference movie0 pointer and add object to list of movies
+        movieList.push_back(*movie0);
+
+        // Ask if user wanna do it again, but only if file has more reviews
+        if (!endOfFile)
+        {
             cout << "Add another movie (y/n): ";
             getline(cin, userInput);
-        } while (userInput == "y" || userInput == "yes" || userInput == "Y");
-    }
-    else
-    { // Output error if problem opening file
-        cerr << "Error opening file! Better luck next time..." << endl;
-    }
+        }
+    } while ((userInput == "y" || userInput == "yes" || userInput == "Y") && !endOfFile);
 
     // Movie addition done, nullify pointers
     movie0 = nullptr;
 
     // Ouput all reviews to console
-    cout << "All movie reviews for movie: " << movie0.getName() << " (" << movie0.getYearReleased() << "):" << endl;
-    cout << movie0.reviewsToString() << endl;
-    cout << "\t> Average rating: " << fixed << setprecision(2) << movie0.getReviewRatingAve() << endl;
+    for (size_t i = 0; i < movieList.size(); i++)
+    {
+        cout << "All movie reviews for movie: " << movie0.getName() << " (" << movie0.getYearReleased() << "):" << endl;
+        cout << movie0.reviewsToString() << endl;
+        cout << "\t> Average rating: " << fixed << setprecision(2) << movie0.getReviewRatingAve() << endl;
+    }
 
     return 0;
 }
