@@ -238,15 +238,15 @@ string Movie::getReview(int index)
         throw invalid_argument("Review not found at index: " + index);
 
     // Set current pointer equal to review object
-    stringstream output;
+    string output;
     review *current = head;
     for (size_t i = 0; i < index; i++)
     {
         current = current->next;
     }
-    output << fixed << setprecision(1) << current->rating << ": " << current->comment;
+    output += to_string(current->rating) + ": " + current->comment;
 
-    return output.str();
+    return output;
 }
 // Deletes Movie review at given index
 void Movie::deleteReview(int index)
