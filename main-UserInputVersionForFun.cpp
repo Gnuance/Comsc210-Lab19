@@ -65,7 +65,7 @@ int main()
     int numOfReviews = 0;
     // double reviewRating = -1;
     // string reviewComment = "";
-    Movie *movie0 = nullptr;
+    Movie *moviePtr = nullptr;
     vector<Movie*> movieList = vector<Movie*>();
     const string INPUT_FILE_NAME = "movieReviews.txt";
     ifstream inputFile;
@@ -129,10 +129,10 @@ int main()
         } while (movieYearReleased < 1887);
 
         // We have the movie name and year, now add Movie to list
-        movie0 = new Movie(movieName, movieYearReleased);
+        moviePtr = new Movie(movieName, movieYearReleased);
 
-        // Dereference movie0 pointer and add object to list of movies
-        movieList.push_back(movie0);
+        // Dereference moviePtr pointer and add object to list of movies
+        movieList.push_back(moviePtr);
 
         // Use rand() to add random number of reviews < 7, with random ratings to movie
         numOfReviews = rand() % 3 + 4;
@@ -142,7 +142,7 @@ int main()
             if (getline(inputFile, fileLine))
             {
                 // Add random rating and review from file
-                movie0->addReview(GetRandomDouble(1.0, 5.0), fileLine, headOrTail);
+                moviePtr->addReview(GetRandomDouble(1.0, 5.0), fileLine, headOrTail);
             }
             else
             {
@@ -161,7 +161,7 @@ int main()
     } while ((userInput == "y" || userInput == "yes" || userInput == "Y") && !endOfFile);
 
     // Movie addition done, nullify pointers
-    movie0 = nullptr;
+    moviePtr = nullptr;
 
     // Ouput all reviews to console
     for (size_t i = 0; i < movieList.size(); i++)
