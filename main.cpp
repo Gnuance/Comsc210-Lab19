@@ -3,7 +3,7 @@
 
     Design Decisions:
     1. We already have all the structure in place from Lab 18 with reviews as a subclass for each movie object, and a method to delete
-        all reviews in the Movie object destructor.    
+        all reviews in the Movie object destructor.
     2. I think we'll use a do while loop to continuously add movies, and during each iteration, we'll use rand() for the number of
         fake movie reviews to the movie, along with rand() to assign the rating.
     3. Planning to keep it simple with a vector to hold the movie elements and delete the vector at the end of the program.
@@ -58,8 +58,10 @@ int main()
     string movieName = "";
     int movieYearReleased = 0;
     int headOrTail = -1;
+    int numOfReviews = 0;
     // double reviewRating = -1;
     // string reviewComment = "";
+    Movie *movie0 = nullptr;
     vector<Movie> movieList = vector<Movie>();
     Movie movie0 = Movie("Chinatown", 1974);
 
@@ -106,18 +108,31 @@ int main()
                 movieYearReleased = 0; // Reset value for next try
                 continue;
             }
-            // String is a double but verify if it's in range 
-            if (movieYearReleased < 1887) cout << "Invalid input." << endl;
+            // String is a double but verify if it's in range
+            if (movieYearReleased < 1887)
+                cout << "Invalid input." << endl;
         } while (movieYearReleased < 1887);
 
         // We the movie name and year, now add Movie to list
-        movieList.push_back(Movie(movieName, movieYearReleased));
-        
+        movie0 = new Movie(movieName, movieYearReleased);
+
+        // Use rand() to add random number of reviews < 7, with random ratings to movie
+        numOfReviews = rand() % 7;
+        for (size_t i = 0; i < numOfReviews; i++)
+        {
+            movie0->addReview(rand() % 5 + 1, );
+        }
+
+        // Dereference movie0 pointer and add object to list of movies
+        movieList.push_back(*movie0);
 
         // Ask if user wanna do it again
         cout << "Add another movie (y/n): ";
         getline(cin, userInput);
     } while (userInput == "y" || userInput == "yes" || userInput == "Y");
+
+    // Movie addition done, nullify pointers
+    movie0 = nullptr;
 
     // Ouput all reviews to console
     cout << "All movie reviews for movie: " << movie0.getName() << " (" << movie0.getYearReleased() << "):" << endl;
