@@ -128,7 +128,7 @@ int main()
                 cout << "Invalid input." << endl;
         } while (movieYearReleased < 1887);
 
-        // We the movie name and year, now add Movie to list
+        // We have the movie name and year, now add Movie to list
         movie0 = new Movie(movieName, movieYearReleased);
 
         // Use rand() to add random number of reviews < 7, with random ratings to movie
@@ -136,12 +136,15 @@ int main()
         for (size_t i = 0; i < numOfReviews; i++)
         {
             // Check if input file has data to read
-            if (!getline(inputFile, fileLine))
+            if (getline(inputFile, fileLine))
+            {
+                movie0->addReview(GetRandomDouble(1.0, 5.0), fileLine, headOrTail);
+            }
+            else
             {
                 endOfFile = true;
                 break;
             }
-            movie0->addReview(GetRandomDouble(1.0, 5.0), fileLine, headOrTail);
         }
 
         // Dereference movie0 pointer and add object to list of movies
