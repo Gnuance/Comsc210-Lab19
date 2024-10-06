@@ -66,7 +66,7 @@ int main()
     // double reviewRating = -1;
     // string reviewComment = "";
     Movie *movie0 = nullptr;
-    vector<*Movie> movieList = vector<*Movie>();
+    vector<Movie*> movieList = vector<Movie*>();
     const string INPUT_FILE_NAME = "movieReviews.txt";
     ifstream inputFile;
     string fileLine = "";
@@ -132,7 +132,7 @@ int main()
         movie0 = new Movie(movieName, movieYearReleased);
 
         // Dereference movie0 pointer and add object to list of movies
-        movieList.push_back(*movie0);
+        movieList.push_back(movie0);
 
         // Use rand() to add random number of reviews < 7, with random ratings to movie
         numOfReviews = rand() % 3 + 4;
@@ -141,12 +141,12 @@ int main()
             // Check if input file has data to read
             if (getline(inputFile, fileLine))
             {
-                // cout << fileLine << endl;
+                // Add random rating and review from file
                 movie0->addReview(GetRandomDouble(1.0, 5.0), fileLine, headOrTail);
-                cout << movie0->getReview(i) << endl;
             }
             else
             {
+                // Break and flag if no more reviews in file to read from
                 endOfFile = true;
                 break;
             }
@@ -166,9 +166,9 @@ int main()
     // Ouput all reviews to console
     for (size_t i = 0; i < movieList.size(); i++)
     {
-        cout << "All movie reviews for movie: " << movieList.at(i).getName() << " (" << movieList.at(i).getYearReleased() << "):" << endl;
-        cout << movieList.at(i).reviewsToString() << endl;
-        cout << "\t> Average rating: " << fixed << setprecision(1) << movieList.at(i).getReviewRatingAve() << endl;
+        cout << "All movie reviews for movie: " << movieList.at(i)->getName() << " (" << movieList.at(i)->getYearReleased() << "):" << endl;
+        cout << movieList.at(i)->reviewsToString() << endl;
+        cout << "\t> Average rating: " << fixed << setprecision(1) << movieList.at(i)->getReviewRatingAve() << endl;
     }
 
     return 0;
@@ -243,15 +243,15 @@ string Movie::getReview(int index)
         throw invalid_argument("Review not found at index: " + index);
 
     // Set current pointer equal to review object
-    string output = "";
+    stringstream output;
     review *current = head;
     for (size_t i = 0; i < index; i++)
     {
         current = current->next;
     }
-    output += to_string(current->rating) + ": " + current->comment;
+    output << fixed << setprecision(1) << current->rating << ": " << current->comment;
 
-    return output;
+    return output.str();
 }
 // Deletes Movie review at given index
 void Movie::deleteReview(int index)
