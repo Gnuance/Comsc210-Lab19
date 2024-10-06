@@ -138,8 +138,9 @@ int main()
             // Check if input file has data to read
             if (getline(inputFile, fileLine))
             {
-                cout << fileLine << endl;
+                // cout << fileLine << endl;
                 movie0->addReview(GetRandomDouble(1.0, 5.0), fileLine, headOrTail);
+                cout << movie0->getReview(i) << endl;
             }
             else
             {
@@ -242,7 +243,7 @@ string Movie::getReview(int index)
         throw invalid_argument("Review not found at index: " + index);
 
     // Set current pointer equal to review object
-    string output;
+    string output = "";
     review *current = head;
     for (size_t i = 0; i < index; i++)
     {
