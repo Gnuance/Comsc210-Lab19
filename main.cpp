@@ -53,6 +53,9 @@ public:
     ~Movie();                    // Deletes object, as well as all associated Movie reviews
 };
 
+// Returns a random double
+double GetRandomDouble(double, double);
+
 int main()
 {
     string userInput = "";
@@ -138,7 +141,7 @@ int main()
                 endOfFile = true;
                 break;
             }
-            movie0->addReview(rand() % 5 + 1, fileLine, headOrTail);
+            movie0->addReview(GetRandomDouble(1.0, 5.0), fileLine, headOrTail);
         }
 
         // Dereference movie0 pointer and add object to list of movies
@@ -158,9 +161,9 @@ int main()
     // Ouput all reviews to console
     for (size_t i = 0; i < movieList.size(); i++)
     {
-        cout << "All movie reviews for movie: " << movie0.getName() << " (" << movie0.getYearReleased() << "):" << endl;
-        cout << movie0.reviewsToString() << endl;
-        cout << "\t> Average rating: " << fixed << setprecision(2) << movie0.getReviewRatingAve() << endl;
+        cout << "All movie reviews for movie: " << movieList.at(i).getName() << " (" << movieList.at(i).getYearReleased() << "):" << endl;
+        cout << movieList.at(i).reviewsToString() << endl;
+        cout << "\t> Average rating: " << fixed << setprecision(1) << movieList.at(i).getReviewRatingAve() << endl;
     }
 
     return 0;
@@ -241,7 +244,7 @@ string Movie::getReview(int index)
     {
         current = current->next;
     }
-    output << fixed << setprecision(2) << current->rating << ": " << current->comment;
+    output << fixed << setprecision(1) << current->rating << ": " << current->comment;
 
     return output.str();
 }
@@ -352,4 +355,10 @@ string Movie::reviewsToString()
 Movie::~Movie()
 {
     deleteAllReviews();
+}
+
+// Returns a random double
+double GetRandomDouble(double min, double max)
+{
+    return min + static_cast<double>(rand()) / (static_cast<double>(RAND_MAX / (max - min)));
 }
