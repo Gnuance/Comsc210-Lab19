@@ -10,9 +10,9 @@
 */
 
 #include <iostream>
-#include <iomanip>
+#include <iomanip> // setprecision()
 #include <string>
-#include <sstream>
+#include <sstream> // stringstream for Movie.getReview()
 #include <exception>
 #include <vector>
 using namespace std;
@@ -60,7 +60,7 @@ int main()
     int headOrTail = -1;
     // double reviewRating = -1;
     // string reviewComment = "";
-    vector<Movie> movies = vector<Movie>();
+    vector<Movie> movieList = vector<Movie>();
     Movie movie0 = Movie("Chinatown", 1974);
 
     // Phew, now that the object structure is in place, let's start working on the console ui
@@ -87,36 +87,35 @@ int main()
 
     do // Now that we have a valid option for linked list additions, prompt user for movie info
     {
-        // Get Movie name
+        // Get Movie name from user
         cout << "Enter the movie name: ";
         getline(cin, movieName);
 
-        do // Get review rating from user
+        do // Get Movie year released from user
         {
-            cout << "Enter review rating 0-5: ";
+            cout << "Enter the year " << movieName << " was released: ";
             getline(cin, userInput);
             try
             {
-                reviewRating = stod(userInput);
+                movieYearReleased = stoi(userInput);
             }
             catch (const exception &e)
             {
-                // String not a double. Catch statement cannot be written as above because comparison operator < and > don't work like !=
+                // String not an int. Catch statement cannot be written as above because comparison operator < and > don't work like !=
                 cout << "Invalid input." << endl;
-                reviewRating = -1; // Reset value for next try
+                movieYearReleased = 0; // Reset value for next try
                 continue;
             }
             // String is a double but verify if it's in range 
-            if (reviewRating < 0 || reviewRating > 5) cout << "Invalid input." << endl;
-        } while (reviewRating < 0 || reviewRating > 5);
+            if (movieYearReleased < 1887) cout << "Invalid input." << endl;
+        } while (movieYearReleased < 1887);
 
+        // We the movie name and year, now add Movie to list
+        movieList.push_back(Movie(movieName, movieYearReleased));
         
 
-        // We have rating and comment, now add to Movie object review
-        movie0.addReview(reviewRating, reviewComment, headOrTail);
-
         // Ask if user wanna do it again
-        cout << "Add another review (y/n): ";
+        cout << "Add another movie (y/n): ";
         getline(cin, userInput);
     } while (userInput == "y" || userInput == "yes" || userInput == "Y");
 
