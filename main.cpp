@@ -132,7 +132,7 @@ int main()
         movie0 = new Movie(movieName, movieYearReleased);
 
         // Use rand() to add random number of reviews < 7, with random ratings to movie
-        numOfReviews = rand() % 7;
+        numOfReviews = rand() % 3 + 4;
         for (size_t i = 0; i < numOfReviews; i++)
         {
             // Check if input file has data to read
