@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <iomanip> // setprecision()
+#include <fstream> // file io
 #include <string>
 #include <sstream> // stringstream for Movie.getReview()
 #include <exception>
@@ -63,7 +64,9 @@ int main()
     // string reviewComment = "";
     Movie *movie0 = nullptr;
     vector<Movie> movieList = vector<Movie>();
-    Movie movie0 = Movie("Chinatown", 1974);
+    const string INPUT_FILE_NAME = "movieReviews.txt";
+    ifstream inputFile;
+    string fileLine = "";
 
     // Phew, now that the object structure is in place, let's start working on the console ui
     // Get user input for program, either 0 or 1 for how to add new reviews to linked list
@@ -87,49 +90,61 @@ int main()
             cout << "Invalid input. Please enter 0 or 1." << endl;
     } while (headOrTail != 0 && headOrTail != 1);
 
-    do // Now that we have a valid option for linked list additions, prompt user for movie info
+    // Try opening file and output error to console if file is no good
+    inputFile.open(INPUT_FILE_NAME);
+    if (inputFile)
     {
-        // Get Movie name from user
-        cout << "Enter the movie name: ";
-        getline(cin, movieName);
-
-        do // Get Movie year released from user
+        do // Now that we have a valid option for linked list additions, prompt user for movie info
         {
-            cout << "Enter the year " << movieName << " was released: ";
+            // Get Movie name from user
+            cout << "Enter the movie name: ";
+            getline(cin, movieName);
+
+            do // Get Movie year released from user
+            {
+                cout << "Enter the year " << movieName << " was released: ";
+                getline(cin, userInput);
+                try
+                {
+                    movieYearReleased = stoi(userInput);
+                }
+                catch (const exception &e)
+                {
+                    // String not an int. Catch statement cannot be written as above because comparison operator < and > don't work like !=
+                    cout << "Invalid input." << endl;
+                    movieYearReleased = 0; // Reset value for next try
+                    continue;
+                }
+                // String is a double but verify if it's in range
+                if (movieYearReleased < 1887)
+                    cout << "Invalid input." << endl;
+            } while (movieYearReleased < 1887);
+
+            // We the movie name and year, now add Movie to list
+            movie0 = new Movie(movieName, movieYearReleased);
+
+            // Use rand() to add random number of reviews < 7, with random ratings to movie
+            numOfReviews = rand() % 7;
+            for (size_t i = 0; i < numOfReviews; i++)
+            {
+                if (getline(inputFile, fileLine))
+                {
+                    movie0->addReview(rand() % 5 + 1, );
+                }
+            }
+
+            // Dereference movie0 pointer and add object to list of movies
+            movieList.push_back(*movie0);
+
+            // Ask if user wanna do it again
+            cout << "Add another movie (y/n): ";
             getline(cin, userInput);
-            try
-            {
-                movieYearReleased = stoi(userInput);
-            }
-            catch (const exception &e)
-            {
-                // String not an int. Catch statement cannot be written as above because comparison operator < and > don't work like !=
-                cout << "Invalid input." << endl;
-                movieYearReleased = 0; // Reset value for next try
-                continue;
-            }
-            // String is a double but verify if it's in range
-            if (movieYearReleased < 1887)
-                cout << "Invalid input." << endl;
-        } while (movieYearReleased < 1887);
-
-        // We the movie name and year, now add Movie to list
-        movie0 = new Movie(movieName, movieYearReleased);
-
-        // Use rand() to add random number of reviews < 7, with random ratings to movie
-        numOfReviews = rand() % 7;
-        for (size_t i = 0; i < numOfReviews; i++)
-        {
-            movie0->addReview(rand() % 5 + 1, );
-        }
-
-        // Dereference movie0 pointer and add object to list of movies
-        movieList.push_back(*movie0);
-
-        // Ask if user wanna do it again
-        cout << "Add another movie (y/n): ";
-        getline(cin, userInput);
-    } while (userInput == "y" || userInput == "yes" || userInput == "Y");
+        } while (userInput == "y" || userInput == "yes" || userInput == "Y");
+    }
+    else
+    { // Output error if problem opening file
+        cerr << "Error opening file! Better luck next time..." << endl;
+    }
 
     // Movie addition done, nullify pointers
     movie0 = nullptr;
